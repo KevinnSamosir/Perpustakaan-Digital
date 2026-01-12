@@ -159,12 +159,8 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @forelse($latestBooks ?? [] as $book)
                 <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden card-modern">
-                    <div class="h-56 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center relative">
-                        @if($book->cover_image)
-                        <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
-                        @else
-                        <i class="fas fa-book text-white text-5xl opacity-50"></i>
-                        @endif
+                    <div class="h-56 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center relative overflow-hidden">
+                        <img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($book->title) }}&background=6366f1&color=fff&size=400&font-size=0.15';">
                         <div class="absolute top-3 right-3">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-white/90 text-xs font-medium {{ $book->available_stock > 0 ? 'text-emerald-700' : 'text-red-700' }}">
                                 {{ $book->available_stock > 0 ? 'Tersedia' : 'Habis' }}

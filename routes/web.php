@@ -338,6 +338,7 @@ Route::middleware('auth')->group(function () {
                 'member_id' => $member->id,
                 'book_id' => $book->id,
                 'loan_type' => 'physical',
+                'loan_date' => now(),
                 'status' => 'pending', // Menunggu persetujuan admin
                 'notes' => "Durasi peminjaman: {$loanDuration} hari",
             ]);
@@ -1038,6 +1039,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         return view('admin.users.index', compact('users'));
     });
 
+    // Route for creating user (redirect to users page with modal trigger)
+    Route::get('/users/create', function () {
+        return redirect('/admin/users')->with('openModal', 'addUser');
+    });
+
     Route::post('/users', function (Request $request) {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -1135,6 +1141,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         
         $members = $query->latest()->paginate(15);
         return view('admin.members.index', compact('members'));
+    });
+
+    // Member detail
+    Route::get('/members/{member}', function (Member $member) {
+        $member->load(['user', 'loans.book']);
+        $activeLoans = $member->loans()->whereIn('status', ['borrowed', 'pending', 'approved'])->with('book')->get();
+        $loanHistory = $member->loans()->whereIn('status', ['returned', 'completed'])->with('book')->latest()->take(10)->get();
+        $stats = [
+            'total_loans' => $member->loans()->count(),
+            'active_loans' => $member->loans()->whereIn('status', ['borrowed', 'pending', 'approved'])->count(),
+            'returned_loans' => $member->loans()->whereIn('status', ['returned', 'completed'])->count(),
+            'overdue_loans' => $member->loans()->where('status', 'overdue')->count(),
+        ];
+        return view('admin.members.show', compact('member', 'activeLoans', 'loanHistory', 'stats'));
     });
 
     Route::patch('/members/{member}/toggle-status', function (Member $member) {
@@ -1432,6 +1452,37 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         $actions = ActivityLog::select('action')->distinct()->pluck('action');
         
         return view('admin.logs.index', compact('logs', 'actions'));
+    });
+
+    // =====================
+    // Activity Logs
+    // =====================
+    Route::get('/activity-logs', function () {
+        $query = ActivityLog::with('user');
+        
+        if (request('search')) {
+            $search = request('search');
+            $query->where(function($q) use ($search) {
+                $q->where('action', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+        
+        if (request('action')) {
+            $query->where('action', request('action'));
+        }
+        
+        if (request('date')) {
+            $query->whereDate('created_at', request('date'));
+        }
+        
+        $logs = $query->latest()->paginate(20);
+        $actionTypes = ActivityLog::select('action')->distinct()->pluck('action');
+        
+        return view('admin.activity-logs.index', compact('logs', 'actionTypes'));
     });
 
     // =====================

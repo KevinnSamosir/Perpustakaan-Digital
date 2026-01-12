@@ -27,6 +27,15 @@ class Setting extends Model
 
     public static function set($key, $value, $type = 'string', $group = 'general', $description = null)
     {
+        // Convert array/object to JSON string for storage
+        if (is_array($value) || is_object($value)) {
+            $value = json_encode($value);
+            $type = 'json';
+        }
+        
+        // Ensure value is a string for database storage
+        $value = is_string($value) ? $value : (string) $value;
+        
         return static::updateOrCreate(
             ['key' => $key],
             [

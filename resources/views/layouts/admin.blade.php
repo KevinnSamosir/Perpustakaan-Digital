@@ -148,9 +148,6 @@
                         <a href="{{ url('/admin/users') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white {{ request()->is('admin/users') ? 'text-white' : '' }}">
                             <i class="fas fa-list w-4"></i> Daftar User
                         </a>
-                        <a href="{{ url('/admin/users/create') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white {{ request()->is('admin/users/create') ? 'text-white' : '' }}">
-                            <i class="fas fa-plus w-4"></i> Tambah User
-                        </a>
                         <a href="{{ url('/admin/members') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white {{ request()->is('admin/members*') ? 'text-white' : '' }}">
                             <i class="fas fa-id-card w-4"></i> Data Anggota
                         </a>
@@ -183,83 +180,25 @@
                 </div>
                 
                 <!-- Laporan -->
-                <div>
-                    <button onclick="toggleSubmenu('laporan')" class="w-full flex items-center justify-between px-4 py-3 text-gray-300">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-chart-bar w-5 text-center"></i>
-                            <span>Laporan</span>
-                        </div>
-                        <i class="fas fa-angle-right menu-arrow text-xs" id="laporan-arrow"></i>
-                    </button>
-                    <div id="laporan-submenu" class="submenu bg-sidebar-darker">
-                        <a href="{{ url('/admin/reports') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white {{ request()->is('admin/reports') ? 'text-white' : '' }}">
-                            <i class="fas fa-file-alt w-4"></i> Laporan Peminjaman
-                        </a>
-                        <a href="{{ url('/admin/reports?type=popular') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white">
-                            <i class="fas fa-fire w-4"></i> Buku Populer
-                        </a>
-                        <a href="{{ url('/admin/reports?type=users') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white">
-                            <i class="fas fa-user-check w-4"></i> User Aktif
-                        </a>
-                        <a href="{{ url('/admin/reports?export=true') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white">
-                            <i class="fas fa-download w-4"></i> Export Data
-                        </a>
-                    </div>
-                </div>
+                <a href="{{ url('/admin/reports') }}" class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-sidebar-hover {{ request()->is('admin/reports*') ? 'bg-sidebar-hover text-white' : '' }}">
+                    <i class="fas fa-chart-bar w-5 text-center"></i>
+                    <span>Laporan & Statistik</span>
+                </a>
                 
                 <!-- Pengaturan -->
-                <div>
-                    <button onclick="toggleSubmenu('pengaturan')" class="w-full flex items-center justify-between px-4 py-3 text-gray-300">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-cog w-5 text-center"></i>
-                            <span>Pengaturan</span>
-                        </div>
-                        <i class="fas fa-angle-right menu-arrow text-xs" id="pengaturan-arrow"></i>
-                    </button>
-                    <div id="pengaturan-submenu" class="submenu bg-sidebar-darker">
-                        <a href="{{ url('/admin/settings') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white {{ request()->is('admin/settings') ? 'text-white' : '' }}">
-                            <i class="fas fa-sliders-h w-4"></i> Pengaturan Umum
-                        </a>
-                        <a href="{{ url('/admin/settings?tab=loan') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white">
-                            <i class="fas fa-calendar-alt w-4"></i> Durasi Peminjaman
-                        </a>
-                        <a href="{{ url('/admin/settings?tab=fine') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white">
-                            <i class="fas fa-money-bill w-4"></i> Denda Keterlambatan
-                        </a>
-                    </div>
-                </div>
+                <a href="{{ url('/admin/settings') }}" class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-sidebar-hover {{ request()->is('admin/settings*') ? 'bg-sidebar-hover text-white' : '' }}">
+                    <i class="fas fa-cog w-5 text-center"></i>
+                    <span>Pengaturan</span>
+                </a>
                 
                 <!-- Log Aktivitas -->
-                <div>
-                    <button onclick="toggleSubmenu('log')" class="w-full flex items-center justify-between px-4 py-3 text-gray-300">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-history w-5 text-center"></i>
-                            <span>Log Aktivitas</span>
-                        </div>
-                        <i class="fas fa-angle-right menu-arrow text-xs" id="log-arrow"></i>
-                    </button>
-                    <div id="log-submenu" class="submenu bg-sidebar-darker">
-                        <a href="{{ url('/admin/activity-logs') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white {{ request()->is('admin/activity-logs') ? 'text-white' : '' }}">
-                            <i class="fas fa-user-shield w-4"></i> Log Admin
-                        </a>
-                        <a href="{{ url('/admin/activity-logs?type=user') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white">
-                            <i class="fas fa-user w-4"></i> Log User
-                        </a>
-                        <a href="{{ url('/admin/activity-logs?type=system') }}" class="flex items-center gap-3 px-4 py-2 pl-12 text-gray-400 text-sm hover:text-white">
-                            <i class="fas fa-server w-4"></i> Log Sistem
-                        </a>
-                    </div>
-                </div>
+                <a href="{{ url('/admin/activity-logs') }}" class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-sidebar-hover {{ request()->is('admin/activity-logs*') ? 'bg-sidebar-hover text-white' : '' }}">
+                    <i class="fas fa-history w-5 text-center"></i>
+                    <span>Log Aktivitas</span>
+                </a>
                 
                 <!-- Divider -->
                 <div class="border-t border-gray-700 my-2"></div>
-                
-                <!-- Website Link -->
-                <a href="{{ url('/') }}" target="_blank" class="flex items-center gap-3 px-4 py-3 text-gray-300">
-                    <i class="fas fa-globe w-5 text-center"></i>
-                    <span>Lihat Website</span>
-                    <i class="fas fa-external-link-alt text-xs ml-auto"></i>
-                </a>
                 
                 <!-- Logout -->
                 <form action="{{ route('logout') }}" method="POST">
@@ -361,12 +300,6 @@
                 toggleSubmenu('user');
             } else if (path.includes('/admin/loans')) {
                 toggleSubmenu('peminjaman');
-            } else if (path.includes('/admin/reports')) {
-                toggleSubmenu('laporan');
-            } else if (path.includes('/admin/settings')) {
-                toggleSubmenu('pengaturan');
-            } else if (path.includes('/admin/activity-logs')) {
-                toggleSubmenu('log');
             }
         });
     </script>

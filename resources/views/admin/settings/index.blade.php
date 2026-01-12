@@ -8,7 +8,6 @@
 <div class="space-y-6">
     <form action="{{ url('/admin/settings') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        @method('PUT')
         
         <!-- General Settings -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6">

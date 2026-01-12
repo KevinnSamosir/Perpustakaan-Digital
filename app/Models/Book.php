@@ -61,6 +61,9 @@ class Book extends Model
         'allow_download' => 'boolean',
     ];
 
+    // Tambahkan accessor ke serialization
+    protected $appends = ['cover_url'];
+
     protected static function boot()
     {
         parent::boot();
@@ -121,7 +124,44 @@ class Book extends Model
             }
             return asset('storage/' . $this->cover_image);
         }
-        return null;
+        
+        // Generate SVG placeholder as data URI (no external request needed)
+        $colors = ['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444', '#6366F1', '#EC4899', '#14B8A6'];
+        $colorIndex = abs(crc32($this->title ?? 'book')) % count($colors);
+        $bgColor = $colors[$colorIndex];
+        $title = htmlspecialchars(substr($this->title ?? 'Book', 0, 25), ENT_QUOTES);
+        
+        // Split title into lines for better display
+        $words = explode(' ', $title);
+        $lines = [];
+        $currentLine = '';
+        foreach ($words as $word) {
+            if (strlen($currentLine . ' ' . $word) > 12) {
+                if ($currentLine) $lines[] = $currentLine;
+                $currentLine = $word;
+            } else {
+                $currentLine = trim($currentLine . ' ' . $word);
+            }
+        }
+        if ($currentLine) $lines[] = $currentLine;
+        $lines = array_slice($lines, 0, 3); // Max 3 lines
+        
+        $textY = 300 - (count($lines) * 15);
+        $textElements = '';
+        foreach ($lines as $i => $line) {
+            $y = $textY + ($i * 35);
+            $textElements .= "<text x='200' y='{$y}' font-family='Arial, sans-serif' font-size='28' font-weight='bold' fill='white' text-anchor='middle'>{$line}</text>";
+        }
+        
+        $svg = "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 400 600'>
+            <rect width='400' height='600' fill='{$bgColor}'/>
+            <rect x='20' y='20' width='360' height='560' fill='none' stroke='rgba(255,255,255,0.2)' stroke-width='2' rx='8'/>
+            <text x='200' y='80' font-family='Arial, sans-serif' font-size='14' fill='rgba(255,255,255,0.7)' text-anchor='middle'>📚 BUKU</text>
+            {$textElements}
+            <text x='200' y='550' font-family='Arial, sans-serif' font-size='12' fill='rgba(255,255,255,0.5)' text-anchor='middle'>Perpustakaan Digital</text>
+        </svg>";
+        
+        return 'data:image/svg+xml;base64,' . base64_encode($svg);
     }
 
     public function isAvailable()

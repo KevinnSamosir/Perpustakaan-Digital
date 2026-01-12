@@ -68,12 +68,8 @@
         @forelse($books ?? [] as $book)
         <div class="bg-white rounded-xl border border-slate-200 overflow-hidden card-modern group">
             <a href="{{ url('/books/'.$book->id) }}" class="block">
-                <div class="h-48 bg-gradient-to-br from-accent-500 to-purple-600 flex items-center justify-center relative">
-                    @if($book->cover_image)
-                    <img src="{{ $book->coverUrl }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
-                    @else
-                    <i class="fas fa-book text-white/80 text-5xl group-hover:scale-110 transition-transform"></i>
-                    @endif
+                <div class="h-48 bg-gradient-to-br from-accent-500 to-purple-600 flex items-center justify-center relative overflow-hidden">
+                    <img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($book->title) }}&background=6366f1&color=fff&size=400&font-size=0.2';">
                     @if($book->available_stock > 0)
                     <span class="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-medium px-2.5 py-1 rounded-full shadow-sm">Tersedia</span>
                     @else

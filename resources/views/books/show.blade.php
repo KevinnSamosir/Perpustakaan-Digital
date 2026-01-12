@@ -34,11 +34,7 @@
                     </div>
 
                     <div class="aspect-[3/4] bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-6 overflow-hidden relative">
-                        @if($book->cover_image)
-                        <img src="{{ $book->coverUrl }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
-                        @else
-                        <i class="fas fa-book text-white text-8xl"></i>
-                        @endif
+                        <img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($book->title) }}&background=6366f1&color=fff&size=400&font-size=0.15';">
                         
                         @if($book->book_type === 'digital')
                         <div class="absolute top-2 right-2 bg-purple-600 text-white px-2 py-1 rounded text-xs">
@@ -358,9 +354,9 @@
                                     </div>
                                     <form action="{{ url('/books/' . $book->id . '/borrow') }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-secondary transition flex items-center gap-2 shadow-lg hover:shadow-xl">
+                                        <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center gap-2 shadow-lg hover:shadow-xl">
                                             <i class="fas fa-hand-holding text-lg"></i>
-                                            <span>Pinjam Sekarang</span>
+                                            <span>Pinjam Buku</span>
                                         </button>
                                     </form>
                                 </div>
@@ -498,11 +494,7 @@
                         @forelse($relatedBooks as $related)
                         <a href="{{ url('/books/' . $related->id) }}" class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition">
                             <div class="aspect-[3/4] bg-gradient-to-br from-blue-400 to-purple-500 rounded flex items-center justify-center mb-3 overflow-hidden">
-                                @if($related->cover_image)
-                                <img src="{{ $related->coverUrl }}" alt="{{ $related->title }}" class="w-full h-full object-cover">
-                                @else
-                                <i class="fas fa-book text-white text-2xl"></i>
-                                @endif
+                                <img src="{{ $related->cover_url }}" alt="{{ $related->title }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($related->title) }}&background=6366f1&color=fff&size=200&font-size=0.2';">
                             </div>
                             <h3 class="font-medium text-gray-800 text-sm truncate">{{ $related->title }}</h3>
                             <p class="text-gray-500 text-xs">{{ $related->author }}</p>

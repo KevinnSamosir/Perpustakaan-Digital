@@ -56,8 +56,8 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4">
                         <div class="flex items-center">
-                            <div class="w-12 h-14 bg-gradient-to-br {{ $isPhysical ? 'from-blue-500 to-indigo-600' : 'from-purple-500 to-pink-600' }} rounded flex items-center justify-center flex-shrink-0">
-                                <i class="fas {{ $isPhysical ? 'fa-book' : 'fa-tablet-alt' }} text-white"></i>
+                            <div class="w-12 h-16 rounded overflow-hidden flex-shrink-0 bg-gray-100">
+                                <img src="{{ $book->cover_url }}" alt="{{ $book->title }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full bg-gradient-to-br {{ $isPhysical ? 'from-blue-500 to-indigo-600' : 'from-purple-500 to-pink-600' }} flex items-center justify-center\'><i class=\'fas {{ $isPhysical ? 'fa-book' : 'fa-tablet-alt' }} text-white\'></i></div>';">
                             </div>
                             <div class="ml-4">
                                 <p class="font-medium text-gray-900">{{ $book->title }}</p>
@@ -136,6 +136,19 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+            
+            @if($errors->any())
+            <div class="px-6 pt-4">
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+            @endif
+            
             <form action="{{ url('/admin/books') }}" method="POST" class="p-6" enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-4">
@@ -297,6 +310,13 @@ function toggleBookTypeFields() {
         isbnField.setAttribute('required', 'required');
     }
 }
+
+// Auto open modal if there are errors
+@if($errors->any())
+document.addEventListener('DOMContentLoaded', function() {
+    openModal('addBookModal');
+});
+@endif
 </script>
 @endpush
 @endsection
